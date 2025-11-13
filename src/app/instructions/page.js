@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { authAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
+import Navbar from '@/components/Navbar';
 
 export default function InstructionsPage() {
   const router = useRouter();
@@ -44,6 +45,7 @@ export default function InstructionsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Navbar/>
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">

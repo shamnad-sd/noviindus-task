@@ -113,6 +113,7 @@ function ResultsContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Navbar/>
       {/* Results Content */}
       <main className="max-w-2xl mx-auto px-4 py-12">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
