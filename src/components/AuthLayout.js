@@ -26,7 +26,7 @@ export default function AuthLayout({ children }) {
           </div>
           
           {/* Right: Form */}
-          <div className="w-full flex flex-col items-center justify-center p-2">
+          <div className="w-full flex flex-col justify-center p-2">
             {children}
           </div>
         </div>

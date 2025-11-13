@@ -149,8 +149,8 @@ export default function VerifyOTPPage() {
 
   return (
     <AuthLayout>
-      <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+      <div className="bg-white rounded-xl shadow-2xl p-7">
+        <h2 className="text-2xl md:text-[24px] font-bold text-gray-900 mb-2">
           Enter the code we texted you
         </h2>
         <p className="text-gray-600 mb-8">
@@ -196,22 +196,22 @@ export default function VerifyOTPPage() {
               </p>
             )}
 
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-[12px] text-gray-600 mb-4">
               Your 6 digit code is on its way. This can sometimes take a few moments to arrive.
             </p>
 
             {/* Resend Code */}
-            <div className="text-sm">
+            <div className="text-sm pb-30">
               {canResend ? (
                 <button
                   onClick={handleResend}
                   disabled={resending}
-                  className="text-[#1B5A7E] hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-[#1C3141] font-semibold cursor-pointer hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {resending ? 'Resending...' : 'Resend code'}
                 </button>
               ) : (
-                <span className="text-gray-500">
+                <span className="text-[#1C3141] font-semibold ">
                   Resend code in {countdown}s
                 </span>
               )}
@@ -223,10 +223,10 @@ export default function VerifyOTPPage() {
             type="button"
             onClick={() => handleSubmit()}
             disabled={loading || otp.some((digit) => !digit)}
-            className={`w-full py-4 px-6 rounded-xl text-white font-semibold text-lg transition-all duration-200 ${
+            className={`w-full py-3 px-6 cursor-pointer rounded-xl text-white font-semibold text-lg transition-all duration-200 ${
               loading || otp.some((digit) => !digit)
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-[#1B5A7E] hover:bg-[#13465F] hover:shadow-lg transform hover:-translate-y-0.5'
+                : 'bg-[#1C3141] hover:bg-[#13465F]  hover:shadow-lg transform hover:-translate-y-0.5'
             }`}
           >
             {loading ? (
