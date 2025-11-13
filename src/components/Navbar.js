@@ -1,14 +1,18 @@
 "use client"
 import { authAPI } from '@/lib/api';
+import { useAuthStore } from '@/lib/store';
 import React from 'react'
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
+  const { logout } = useAuthStore();
+
   const handleLogout = async () => {
     try {
       await authAPI.logout();
       logout();
       toast.success("Logged out successfully");
-      router.push("/auth/login");
+      Router.push("/auth/login");
     } catch (error) {
       console.error("Logout error:", error);
       logout();

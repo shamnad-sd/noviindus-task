@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuthStore } from '@/lib/store';
+import { useAuthStore, useExamStore } from '@/lib/store';
 import { examAPI, authAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
@@ -54,7 +54,9 @@ function computeResultStats(questions, userAnswers) {
 function ResultsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { logout } = useAuthStore();
+
+  const { resetExam } = useExamStore();
+  
 
   const [results, setResults] = useState(null);
 
@@ -90,6 +92,7 @@ function ResultsContent() {
 
   const handleDone = () => {
     // Clear the quiz data
+    resetExam();
     localStorage.removeItem('last_quiz_questions');
     localStorage.removeItem('last_quiz_answers');
     router.push('/instructions');

@@ -1,10 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://nexlearn.noviindusdemosites.in';
-
-// Create axios instance
+// Create axios instance that points to Next.js API routes
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -35,23 +33,10 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      try {
-        const refreshToken = localStorage.getItem('refresh_token');
-        if (!refreshToken) {
-          throw new Error('No refresh token');
-        }
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-          window.location.href = '/auth/login';
-        }
-      } catch (refreshError) {
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-          window.location.href = '/auth/login';
-        }
-        return Promise.reject(refreshError);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/auth/login';
       }
     }
 
@@ -64,20 +49,22 @@ export const authAPI = {
   sendOTP: async (mobile) => {
     const formData = new FormData();
     formData.append('mobile', mobile);
-    const response = await api.post('/auth/send-otp', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      body: formData,
     });
-    return response.data;
+    return response.json();
   },
 
   verifyOTP: async (mobile, otp) => {
     const formData = new FormData();
     formData.append('mobile', mobile);
     formData.append('otp', otp);
-    const response = await api.post('/auth/verify-otp', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await fetch('/api/auth/verify-otp', {
+      method: 'POST',
+      body: formData,
     });
-    return response.data;
+    return response.json();
   },
 
   createProfile: async (mobile, name, email, qualification, profileImage) => {
@@ -88,65 +75,47 @@ export const authAPI = {
     formData.append('qualification', qualification);
     formData.append('profile_image', profileImage);
     
-    const response = await api.post('/auth/create-profile', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await fetch('/api/auth/create-profile', {
+      method: 'POST',
+      body: formData,
     });
-    return response.data;
+    return response.json();
   },
 
   logout: async () => {
-    const response = await api.post('/auth/logout');
-    return response.data;
+    const token = localStorage.getItem('access_token');
+    const response = await fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+      },
+    });
+    return response.json();
   },
 };
 
 // Exam API calls
 export const examAPI = {
- getQuestions: async () => {
-    const response = await fetch('https://opentdb.com/api.php?amount=50&type=multiple');
-    const data = await response.json();
-    
-    if (data.results && data.results.length) {
-      return {
-        success: true,
-        questions: data.results.map((q, idx) => {
-          const allOptions = [
-            ...q.incorrect_answers.map((o, i) => ({ id: i + 1, option: o })),
-            { id: 99, option: q.correct_answer }
-          ].sort(() => Math.random() - 0.5);
-          
-          return {
-            id: idx + 1,
-            question: q.question,
-            options: allOptions,
-            correct_answer: q.correct_answer,
-            incorrect_answers: q.incorrect_answers, 
-            image: null
-          };
-        }),
-        total_time: 90,
-        instruction: "General Knowledge Quiz"
-      };
-    }
-    return { success: false, message: 'No questions loaded' };
+  getQuestions: async () => {
+    const response = await fetch('/api/exam/questions');
+    return response.json();
   },
+
   submitAnswers: async (answers) => {
-    return {
-      success: true,
-      exam_history_id: Math.floor(Math.random() * 1000000),
-      score: answers.filter(a => a.selected_option_id != null).length,
-      correct: 3,
-      wrong: 7,
-      not_attended: answers.filter(a => a.selected_option_id == null).length,
-      submitted_at: new Date().toISOString(),
-      details: [],
-    };
+    const response = await fetch('/api/exam/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ answers }),
+    });
+    return response.json();
   },
+
   getResults: async (examHistoryId) => {
-    const response = await api.get(`/exam/history?id=${examHistoryId}`);
-    return response.data;
+    const response = await fetch(`/api/exam/results/${examHistoryId}`);
+    return response.json();
   }
 };
-
 
 export default api;
