@@ -5,16 +5,17 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { examAPI, authAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
+import Navbar from '@/components/Navbar';
 
 function computeResultStats(questions, userAnswers) {
   let correct = 0;
   let wrong = 0;
   let not_attended = 0;
-  
+
   for (let i = 0; i < questions.length; i++) {
     const q = questions[i];
     const userAnswerId = userAnswers[q.id];
-    
+
     if (userAnswerId == null || userAnswerId === undefined) {
       not_attended++;
     } else {
@@ -23,10 +24,10 @@ function computeResultStats(questions, userAnswers) {
         ...q.incorrect_answers.map((o, ix) => ({ id: ix + 1, option: o })),
         { id: 99, option: q.correct_answer }
       ];
-      
+
       // Find the option the user selected
       const selectedOption = allOptions.find(opt => opt.id === userAnswerId);
-      
+
       if (selectedOption) {
         // Compare the option text with the correct answer
         if (selectedOption.option === q.correct_answer) {
@@ -40,7 +41,7 @@ function computeResultStats(questions, userAnswers) {
       }
     }
   }
-  
+
   return {
     score: correct,
     total_marks: questions.length,
@@ -56,27 +57,27 @@ function ResultsContent() {
   const { logout } = useAuthStore();
 
   const [results, setResults] = useState(null);
-  
+
   useEffect(() => {
     try {
       const questionsStr = localStorage.getItem('last_quiz_questions');
       const answersStr = localStorage.getItem('last_quiz_answers');
-      
+
       if (!questionsStr || !answersStr) {
         toast.error('No quiz data found!');
         router.push('/instructions');
         return;
       }
-      
+
       const questions = JSON.parse(questionsStr);
       const userAnswers = JSON.parse(answersStr);
-      
+
       if (!questions.length) {
         toast.error('No quiz questions found!');
         router.push('/instructions');
         return;
       }
-      
+
       const stats = computeResultStats(questions, userAnswers);
       setResults(stats);
     } catch (error) {
@@ -86,17 +87,6 @@ function ResultsContent() {
     }
   }, [router]);
 
-  const handleLogout = async () => {
-    try {
-      await authAPI.logout();
-      logout();
-      router.push('/auth/login');
-    } catch (error) {
-      console.error('Logout error:', error);
-      logout();
-      router.push('/auth/login');
-    }
-  };
 
   const handleDone = () => {
     // Clear the quiz data
@@ -120,31 +110,6 @@ function ResultsContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Navbar */}
-      <nav className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#1B5A7E] rounded-xl flex items-center justify-center shadow-md">
-                <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">NexLearn</h1>
-                <p className="text-xs text-[#1B5A7E]">futuristic learning</p>
-              </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-6 py-2.5 bg-[#1B5A7E] text-white rounded-lg font-semibold hover:bg-[#13465F] transition-colors shadow-sm"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </nav>
-
       {/* Results Content */}
       <main className="max-w-2xl mx-auto px-4 py-12">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">

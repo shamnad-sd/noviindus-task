@@ -1,4 +1,3 @@
-// lib/api.js
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://nexlearn.noviindusdemosites.in';
@@ -41,9 +40,6 @@ api.interceptors.response.use(
         if (!refreshToken) {
           throw new Error('No refresh token');
         }
-
-        // Implement token refresh logic here if API provides refresh endpoint
-        // For now, redirect to login
         if (typeof window !== 'undefined') {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
