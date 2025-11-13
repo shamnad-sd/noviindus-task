@@ -106,27 +106,50 @@ export const authAPI = {
 
 // Exam API calls
 export const examAPI = {
-  getQuestions: async () => {
-    const response = await fetch('https://opentdb.com/api.php?amount=10&type=multiple');
+ getQuestions: async () => {
+    const response = await fetch('https://opentdb.com/api.php?amount=50&type=multiple');
     const data = await response.json();
+    
     if (data.results && data.results.length) {
       return {
         success: true,
-        questions: data.results.map((q, idx) => ({
-          id: idx + 1,
-          question: q.question,
-          options: [
-            ...q.incorrect_answers.map((o, i) => ({
-              id: i + 1,
-              option: o,
-            })),
+        questions: data.results.map((q, idx) => {
+          const allOptions = [
+            ...q.incorrect_answers.map((o, i) => ({ id: i + 1, option: o })),
             { id: 99, option: q.correct_answer }
-          ].sort(() => Math.random() - 0.5),
-        })),
+          ].sort(() => Math.random() - 0.5);
+          
+          return {
+            id: idx + 1,
+            question: q.question,
+            options: allOptions,
+            correct_answer: q.correct_answer,
+            incorrect_answers: q.incorrect_answers, 
+            image: null
+          };
+        }),
+        total_time: 90,
+        instruction: "General Knowledge Quiz"
       };
     }
     return { success: false, message: 'No questions loaded' };
   },
+  submitAnswers: async (answers) => {
+    return {
+      success: true,
+      exam_history_id: Math.floor(Math.random() * 1000000),
+      score: answers.filter(a => a.selected_option_id != null).length,
+      correct: 3,
+      wrong: 7,
+      not_attended: answers.filter(a => a.selected_option_id == null).length,
+      submitted_at: new Date().toISOString(),
+      details: [],
+    };
+  },
+  getResults: async (examHistoryId) => {
+    const response = await api.get(`/exam/history?id=${examHistoryId}`);
+    return response.data;
+  }
 };
 
 

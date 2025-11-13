@@ -3,32 +3,88 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
-import { authAPI } from '@/lib/api';
+import { examAPI, authAPI } from '@/lib/api';
+import toast from 'react-hot-toast';
+
+function computeResultStats(questions, userAnswers) {
+  let correct = 0;
+  let wrong = 0;
+  let not_attended = 0;
+  
+  for (let i = 0; i < questions.length; i++) {
+    const q = questions[i];
+    const userAnswerId = userAnswers[q.id];
+    
+    if (userAnswerId == null || userAnswerId === undefined) {
+      not_attended++;
+    } else {
+      // Rebuild the options array exactly as it was created in the exam
+      const allOptions = [
+        ...q.incorrect_answers.map((o, ix) => ({ id: ix + 1, option: o })),
+        { id: 99, option: q.correct_answer }
+      ];
+      
+      // Find the option the user selected
+      const selectedOption = allOptions.find(opt => opt.id === userAnswerId);
+      
+      if (selectedOption) {
+        // Compare the option text with the correct answer
+        if (selectedOption.option === q.correct_answer) {
+          correct++;
+        } else {
+          wrong++;
+        }
+      } else {
+        // If somehow the option ID doesn't exist, count as not attended
+        not_attended++;
+      }
+    }
+  }
+  
+  return {
+    score: correct,
+    total_marks: questions.length,
+    correct,
+    wrong,
+    not_attended
+  };
+}
 
 function ResultsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { logout } = useAuthStore();
-  
-  // Mock result data - In real app, fetch from API using exam_history_id
+
   const [results, setResults] = useState(null);
   
   useEffect(() => {
-    const examHistoryId = searchParams.get('id');
-    
-    // Mock data - Replace with actual API call
-    const mockResults = {
-      exam_history_id: examHistoryId,
-      score: 100,
-      total_marks: 100,
-      correct: 3,
-      wrong: 1,
-      not_attended: 96,
-      submitted_at: new Date().toISOString(),
-    };
-    
-    setResults(mockResults);
-  }, [searchParams]);
+    try {
+      const questionsStr = localStorage.getItem('last_quiz_questions');
+      const answersStr = localStorage.getItem('last_quiz_answers');
+      
+      if (!questionsStr || !answersStr) {
+        toast.error('No quiz data found!');
+        router.push('/instructions');
+        return;
+      }
+      
+      const questions = JSON.parse(questionsStr);
+      const userAnswers = JSON.parse(answersStr);
+      
+      if (!questions.length) {
+        toast.error('No quiz questions found!');
+        router.push('/instructions');
+        return;
+      }
+      
+      const stats = computeResultStats(questions, userAnswers);
+      setResults(stats);
+    } catch (error) {
+      console.error('Error loading results:', error);
+      toast.error('Error loading results');
+      router.push('/instructions');
+    }
+  }, [router]);
 
   const handleLogout = async () => {
     try {
@@ -43,6 +99,9 @@ function ResultsContent() {
   };
 
   const handleDone = () => {
+    // Clear the quiz data
+    localStorage.removeItem('last_quiz_questions');
+    localStorage.removeItem('last_quiz_answers');
     router.push('/instructions');
   };
 
@@ -57,6 +116,8 @@ function ResultsContent() {
     );
   }
 
+  const percentage = Math.round((results.score / results.total_marks) * 100);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Navbar */}
@@ -66,7 +127,7 @@ function ResultsContent() {
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-[#1B5A7E] rounded-xl flex items-center justify-center shadow-md">
                 <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+                  <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" />
                 </svg>
               </div>
               <div>
@@ -93,6 +154,9 @@ function ResultsContent() {
             <h1 className="text-6xl font-bold text-white mb-2">
               {results.score} / {results.total_marks}
             </h1>
+            <p className="text-blue-100 text-xl mt-2">
+              {percentage}%
+            </p>
           </div>
 
           {/* Statistics */}
@@ -109,7 +173,7 @@ function ResultsContent() {
                 <span className="text-lg font-medium text-gray-700">Total Questions:</span>
               </div>
               <span className="text-2xl font-bold text-gray-900">
-                {results.correct + results.wrong + results.not_attended}
+                {results.total_marks}
               </span>
             </div>
 
