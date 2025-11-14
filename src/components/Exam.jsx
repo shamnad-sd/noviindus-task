@@ -248,7 +248,7 @@ const Exam = ()=> {
               <div className="bg-white p-4 rounded-sm shadow-sm">
                 <button
                   onClick={() => setShowParagraph(true)}
-                  className="mb-6 flex items-center gap-2 px-4 py-3 cursor-pointer bg-[#177A9C] text-white rounded-lg hover:bg-[#13465F] transition-colors"
+                  className="mb-6 flex items-center text-[12px] sm:text-[16px] gap-2 px-4 py-3 cursor-pointer bg-[#177A9C] text-white rounded-lg hover:bg-[#13465F] transition-colors"
                 >
                   {/* SVG icons */}
                   <svg
@@ -337,7 +337,7 @@ const Exam = ()=> {
               <div className="flex gap-4 mt-8">
                 <button
                   onClick={handleMarkForReview}
-                  className="flex-1 py-2 px-4 bg-[#800080] text-white rounded-sm cursor-pointer hover:bg-[#551055] transition-colors"
+                  className="flex-1 py-2 px-4  bg-[#800080] text-white rounded-sm cursor-pointer hover:bg-[#551055] transition-colors"
                 >
                   {markedForReview.has(currentQ.id)
                     ? "Unmark"
@@ -369,9 +369,9 @@ const Exam = ()=> {
           <div className="lg:col-span-5">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-6">
               {/* Timer */}
-              <div className="mb-6 flex items-center justify-between">
+              <div className="mb-6 flex flex-col sm:flex-row  items-center justify-between">
                 {/* Left side */}
-                <h3 className="text-gray-900">Question No. Sheet:</h3>
+                <h3 className="text-gray-900 pb-3 md:block hidden">Question No. Sheet:</h3>
 
                 {/* Right side (time label + timer box together) */}
                 <div className="flex items-center gap-3">
@@ -393,10 +393,11 @@ const Exam = ()=> {
                     </span>
                   </div>
                 </div>
+                <h3 className="text-gray-900 pt-4 md:hidden block">Question No. Sheet:</h3>
               </div>
 
               {/* Question Grid */}
-              <div className="grid grid-cols-10 gap-2 mb-6">
+              <div className="grid grid-cols-5 md:grid-cols-10 gap-2 mb-6">
                 {questions.map((q, index) => {
                   const status = getQuestionStatus(index);
                   return (
@@ -453,7 +454,7 @@ const Exam = ()=> {
 
       {/* Comprehensive Paragraph Modal */}
       {showParagraph && (
-        <div className="fixed inset-0 bg-black/70  flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/70 p-5  flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden">
             <div className="px-6 pt-4">
               <h2 className=" text-[#1C3141]">Comprehensive Paragraph</h2>
@@ -469,7 +470,7 @@ const Exam = ()=> {
                 </p>
               </div>
             </div>
-            <div className="p-6 flex justify-end">
+            <div className="p-6 flex justify-center sm:justify-end">
               <button
                 onClick={() => setShowParagraph(false)}
                 className="py-2 px-24 bg-[#1C3141] text-white rounded-[9px] cursor-pointer  hover:bg-[#13465F] transition-colors"

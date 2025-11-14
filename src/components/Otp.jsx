@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthLayout from '@/components/AuthLayout';
 import { authAPI } from '@/lib/api';
@@ -11,13 +11,12 @@ const OTP = () => {
   const router = useRouter();
   const mobile = useAuthStore((state) => state.mobile);
   const setTokens = useAuthStore((state) => state.setTokens);
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState('');
   const [canResend, setCanResend] = useState(false);
   const [countdown, setCountdown] = useState(30);
-  const inputRefs = useRef([]);
 
   useEffect(() => {
     if (!mobile) {
@@ -34,49 +33,19 @@ const OTP = () => {
     }
   }, [countdown, canResend, mobile, router]);
 
-  const handleChange = (index, value) => {
-    if (!/^\d*$/.test(value)) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
+  const handleChange = (e) => {
+    const value = e.target.value.replace(/[^\d]/g, '').slice(0, 6);
+    setOtp(value);
     setError('');
 
-    // Auto-focus next input
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
-    // Auto-submit when all fields are filled
-    if (newOtp.every((digit) => digit !== '') && index === 5) {
-      handleSubmit(newOtp.join(''));
-    }
-  };
-
-  const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-  };
-
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    const newOtp = [...otp];
-    
-    for (let i = 0; i < pastedData.length; i++) {
-      newOtp[i] = pastedData[i];
-    }
-    
-    setOtp(newOtp);
-    
-    if (pastedData.length === 6) {
-      handleSubmit(pastedData);
+    // Auto-submit when 6 digits are entered
+    if (value.length === 6) {
+      handleSubmit(value);
     }
   };
 
   const handleSubmit = async (otpValue = null) => {
-    const otpCode = otpValue || otp.join('');
+    const otpCode = otpValue || otp;
     
     if (otpCode.length !== 6) {
       setError('Please enter a valid 6-digit OTP');
@@ -103,16 +72,14 @@ const OTP = () => {
       } else {
         setError(response.message || 'Invalid OTP');
         toast.error(response.message || 'Invalid OTP');
-        setOtp(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
+        setOtp('');
       }
     } catch (err) {
       console.error('OTP verification error:', err);
       const errorMessage = err.response?.data?.message || 'Failed to verify OTP. Please try again.';
       setError(errorMessage);
       toast.error(errorMessage);
-      setOtp(['', '', '', '', '', '']);
-      inputRefs.current[0]?.focus();
+      setOtp('');
     } finally {
       setLoading(false);
     }
@@ -129,8 +96,7 @@ const OTP = () => {
         toast.success('OTP sent successfully!');
         setCanResend(false);
         setCountdown(30);
-        setOtp(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
+        setOtp('');
       } else {
         toast.error(response.message || 'Failed to resend OTP');
       }
@@ -149,7 +115,7 @@ const OTP = () => {
   return (
     <AuthLayout>
       <div className="bg-white rounded-xl shadow-2xl p-7">
-        <h2 className="text-2xl md:text-[24px] font-bold text-gray-900 mb-2">
+        <h2 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-2">
           Enter the code we texted you
         </h2>
         <p className="text-gray-600 mb-8">
@@ -157,37 +123,37 @@ const OTP = () => {
         </p>
 
         <div className="space-y-6">
-          {/* OTP Label */}
+          {/* OTP Input */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              SMS code
-            </label>
+            <div className="relative">
+              {/* Floating label */}
+              <label
+                htmlFor="otp"
+                className="absolute left-3 -top-3 bg-white px-3 text-sm font-medium text-gray-600 z-10"
+              >
+                SMS code
+              </label>
 
-            {/* OTP Input Fields */}
-            <div className="flex gap-2 md:gap-3 mb-4">
-              {otp.map((digit, index) => (
-                <input
-                  key={index}
-                  ref={(el) => (inputRefs.current[index] = el)}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => handleChange(index, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(index, e)}
-                  onPaste={index === 0 ? handlePaste : undefined}
-                  className={`w-12 h-14 md:w-14 md:h-16 text-center text-2xl font-semibold border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                    error
-                      ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                      : 'border-gray-200 focus:border-[#1B5A7E] focus:ring-blue-100'
-                  }`}
-                  disabled={loading}
-                />
-              ))}
+              <input
+                id="otp"
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={otp}
+                onChange={handleChange}
+                placeholder="123456"
+                className={`w-full px-4 py-4 border-2 rounded-xl text-lg tracking-widest focus:outline-none focus:ring-2 transition-all ${
+                  error
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                    : 'border-gray-300 focus:border-[#1B5A7E] focus:ring-blue-100'
+                }`}
+                disabled={loading}
+                autoComplete="one-time-code"
+              />
             </div>
 
             {error && (
-              <p className="text-sm text-red-600 flex items-center gap-1 mb-4">
+              <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
                 </svg>
@@ -195,22 +161,22 @@ const OTP = () => {
               </p>
             )}
 
-            <p className="text-[12px] text-gray-600 mb-4">
+            <p className="mt-2 text-[12px] text-gray-600">
               Your 6 digit code is on its way. This can sometimes take a few moments to arrive.
             </p>
 
             {/* Resend Code */}
-            <div className="text-sm pb-30">
+            <div className="mt-4 text-sm pb-20 md:pb-30">
               {canResend ? (
                 <button
                   onClick={handleResend}
                   disabled={resending}
-                  className="text-[#1C3141] font-semibold cursor-pointer hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-[#1C3141] font-semibold cursor-pointer hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {resending ? 'Resending...' : 'Resend code'}
                 </button>
               ) : (
-                <span className="text-[#1C3141] font-semibold ">
+                <span className="text-[#1C3141] font-semibold">
                   Resend code in {countdown}s
                 </span>
               )}
@@ -221,11 +187,11 @@ const OTP = () => {
           <button
             type="button"
             onClick={() => handleSubmit()}
-            disabled={loading || otp.some((digit) => !digit)}
+            disabled={loading || otp.length !== 6}
             className={`w-full py-3 px-6 cursor-pointer rounded-xl text-white font-semibold text-lg transition-all duration-200 ${
-              loading || otp.some((digit) => !digit)
+              loading || otp.length !== 6
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-[#1C3141] hover:bg-[#13465F]  hover:shadow-lg transform hover:-translate-y-0.5'
+                : 'bg-[#1C3141] hover:bg-[#13465F] hover:shadow-lg transform hover:-translate-y-0.5'
             }`}
           >
             {loading ? (
@@ -258,4 +224,4 @@ const OTP = () => {
   );
 }
 
-export default OTP
+export default OTP;

@@ -173,7 +173,9 @@ const Profile = () => {
                     />
                   </svg>
 
-                  <span className="text-[9px] pt-3 text-[#CECECE]">Add Your Profile picture</span>
+                  <span className="text-[9px] pt-3 text-[#CECECE]">
+                    Add Your Profile picture
+                  </span>
                 </div>
               )}
             </div>
@@ -191,26 +193,30 @@ const Profile = () => {
 
           {/* Name Input */}
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Name<span className="text-red-500">*</span>
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your Full Name"
-              className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                errors.name
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-gray-200 focus:border-[#1B5A7E] focus:ring-blue-100"
-              }`}
-              disabled={loading}
-            />
+            <div className="relative">
+              {/* Floating label */}
+              <label
+                htmlFor="name"
+                className="absolute left-3 -top-3 bg-white px-3 text-sm font-medium text-gray-600 z-10"
+              >
+                Name<span className="text-black">*</span>
+              </label>
+              
+              <input
+                id="name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Full Name"
+                className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                  errors.name
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:border-[#1B5A7E] focus:ring-blue-100"
+                }`}
+                disabled={loading}
+              />
+            </div>
             {errors.name && (
               <p className="mt-1 text-sm text-red-600">{errors.name}</p>
             )}
@@ -218,26 +224,30 @@ const Profile = () => {
 
           {/* Email Input */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Email<span className="text-red-500">*</span>
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your Email Address"
-              className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                errors.email
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-gray-200 focus:border-[#1B5A7E] focus:ring-blue-100"
-              }`}
-              disabled={loading}
-            />
+            <div className="relative">
+              {/* Floating label */}
+              <label
+                htmlFor="email"
+                className="absolute left-3 -top-3 bg-white px-3 text-sm font-medium text-gray-600 z-10"
+              >
+                Email
+              </label>
+              
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                  errors.email
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:border-[#1B5A7E] focus:ring-blue-100"
+                }`}
+                disabled={loading}
+              />
+            </div>
             {errors.email && (
               <p className="mt-1 text-sm text-red-600">{errors.email}</p>
             )}
@@ -245,26 +255,30 @@ const Profile = () => {
 
           {/* Qualification Input */}
           <div>
-            <label
-              htmlFor="qualification"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Your qualification<span className="text-red-500">*</span>
-            </label>
-            <input
-              id="qualification"
-              name="qualification"
-              type="text"
-              value={formData.qualification}
-              onChange={handleChange}
-              placeholder="e.g., Bachelor's in Computer Science"
-              className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                errors.qualification
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                  : "border-gray-200 focus:border-[#1B5A7E] focus:ring-blue-100"
-              }`}
-              disabled={loading}
-            />
+            <div className="relative">
+              {/* Floating label */}
+              <label
+                htmlFor="qualification"
+                className="absolute left-3 -top-3 bg-white px-3 text-sm font-medium text-gray-600 z-10"
+              >
+                Your qualification<span className="text-black">*</span>
+              </label>
+              
+              <input
+                id="qualification"
+                name="qualification"
+                type="text"
+                value={formData.qualification}
+                onChange={handleChange}
+                placeholder="e.g., Bachelor's in Computer Science"
+                className={`w-full px-4 py-4 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                  errors.qualification
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                    : "border-gray-300 focus:border-[#1B5A7E] focus:ring-blue-100"
+                }`}
+                disabled={loading}
+              />
+            </div>
             {errors.qualification && (
               <p className="mt-1 text-sm text-red-600">
                 {errors.qualification}
@@ -279,7 +293,7 @@ const Profile = () => {
             className={`w-full py-3 px-6 cursor-pointer rounded-xl text-white font-semibold text-lg transition-all duration-200 ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-[#1C3141] hover:bg-[#13465F]  hover:shadow-lg transform hover:-translate-y-0.5"
+                : "bg-[#1C3141] hover:bg-[#13465F] hover:shadow-lg transform hover:-translate-y-0.5"
             }`}
           >
             {loading ? (
@@ -310,6 +324,6 @@ const Profile = () => {
       </div>
     </AuthLayout>
   );
-}
+};
 
-export default Profile
+export default Profile;

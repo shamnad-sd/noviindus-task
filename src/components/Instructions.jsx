@@ -44,18 +44,18 @@ const Instructions = () => {
 
           {/* Stats Card */}
           <div className="px-8 py-6">
-            <div className="bg-[#1C3141] rounded-xl p-9 grid grid-cols-3 gap-4 text-white">
+            <div className="bg-[#1C3141] rounded-xl p-6 md:p-9 grid grid-cols-3 gap-4 text-white">
               <div className="text-center border-r border-white/20">
-                <p className="text-[15px] mb-2">Total MCQ's:</p>
-                <p className="text-[42px]">50</p>
+                <p className="text-[11px] md:text-[15px] mb-2">Total MCQ's:</p>
+                <p className="text-[30px] md:text-[42px]">50</p>
               </div>
               <div className="text-center border-r border-white/20">
-                <p className="text-[15px]  mb-2">Total marks:</p>
-                <p className="text-[42px] ">50</p>
+                <p className="text-[11px] md:text-[15px] mb-2">Total marks:</p>
+                <p className="text-[30px] md:text-[42px] ">50</p>
               </div>
               <div className="text-center">
-                <p className="text-[15px] mb-2">Total time:</p>
-                <p className="text-[42px] ">90:00</p>
+                <p className="text-[11px] md:text-[15px] mb-2">Total time:</p>
+                <p className="text-[30px] md:text-[42px] ">90:00</p>
               </div>
             </div>
           </div>
@@ -111,7 +111,7 @@ const Instructions = () => {
           <div className="px-8 py-3 flex justify-center">
             <button
               onClick={handleStartTest}
-              className="px-36 py-3 bg-[#1C3141] cursor-pointer text-white rounded-xl font-semibold text-lg hover:bg-[#13465F] transition-all hover:shadow-lg transform hover:-translate-y-0.5"
+              className="px-12 py-4 md:px-36 md:py-3 bg-[#1C3141] cursor-pointer text-white rounded-xl font-semibold text-lg hover:bg-[#13465F] transition-all hover:shadow-lg transform hover:-translate-y-0.5"
             >
               Start Test
             </button>

@@ -7,7 +7,7 @@ import { authAPI } from "@/lib/api";
 import { useAuthStore } from "@/lib/store";
 import toast from "react-hot-toast";
 
-const Login =()=> {
+const Login = () => {
   const router = useRouter();
   const setMobile = useAuthStore((state) => state.setMobile);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -47,7 +47,7 @@ const Login =()=> {
   return (
     <AuthLayout>
       <div className="bg-white rounded-xl shadow-2xl p-7">
-        <h2 className="text-2xl md:text-[24px] font-bold text-gray-900 mb-2">
+        <h2 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-2">
           Enter your phone number
         </h2>
         <p className="text-gray-600 mb-8">
@@ -56,51 +56,55 @@ const Login =()=> {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="phone"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Phone number
-            </label>
             <div className="relative">
-              {/* Fixed prefix */}
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-500 text-lg font-semibold">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="18"
-                  viewBox="0 0 24 18"
-                  className=""
-                >
-                  <rect width="24" height="18" fill="#FF9933" />
-                  <rect y="6" width="24" height="6" fill="#FFFFFF" />
-                  <rect y="12" width="24" height="6" fill="#138808" />
-                  <circle cx="12" cy="9" r="2" fill="#000080" />
-                </svg>
-                +91
-              </span>
-              <input
-                id="phone"
-                type="text"
-                value={phoneNumber}
-                onChange={(e) => {
-                  const value = e.target.value
-                    .replace(/[^\d]/g, "")
-                    .slice(0, 10);
-                  setPhoneNumber(value);
-                  setError("");
-                }}
-                placeholder="1234567890"
-                className={`w-full pl-24 pr-4 py-4 border-2 rounded-xl text-lg focus:outline-none focus:ring-2 transition-all ${
-                  error
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-200"
-                    : "border-gray-200 focus:border-[#1B5A7E] focus:ring-blue-100"
-                }`}
-                disabled={loading}
-                maxLength={10}
-                autoComplete="off"
-                inputMode="numeric"
-              />
+              {/* Floating label */}
+              <label
+                htmlFor="phone"
+                className="absolute left-3 -top-3 bg-white px-3 text-sm font-medium text-gray-600 z-10"
+              >
+                Phone number
+              </label>
+              
+              <div className="relative">
+                {/* Fixed prefix */}
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-700 text-lg font-semibold">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="18"
+                    viewBox="0 0 24 18"
+                    className=""
+                  >
+                    <rect width="24" height="18" fill="#FF9933" />
+                    <rect y="6" width="24" height="6" fill="#FFFFFF" />
+                    <rect y="12" width="24" height="6" fill="#138808" />
+                    <circle cx="12" cy="9" r="2" fill="#000080" />
+                  </svg>
+                  +91
+                </span>
+                <input
+                  id="phone"
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    const value = e.target.value
+                      .replace(/[^\d]/g, "")
+                      .slice(0, 10);
+                    setPhoneNumber(value);
+                    setError("");
+                  }}
+                  placeholder="1234567890"
+                  className={`w-full pl-24 pr-4 py-4 border-2 rounded-xl text-lg focus:outline-none focus:ring-2 transition-all ${
+                    error
+                      ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                      : "border-gray-300 focus:border-[#1B5A7E] focus:ring-blue-100"
+                  }`}
+                  disabled={loading}
+                  maxLength={10}
+                  autoComplete="off"
+                  inputMode="numeric"
+                />
+              </div>
             </div>
             {error && (
               <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
@@ -120,7 +124,7 @@ const Login =()=> {
             )}
           </div>
 
-          <div className="text-[11px] text-gray-600 pb-40">
+          <div className="text-[11px] text-gray-600 pb-20 md:pb-40">
             By tapping Get started, you agree to the{" "}
             <a href="#" className="text-[#1B5A7E] hover:underline font-medium">
               Terms & Conditions
@@ -164,5 +168,5 @@ const Login =()=> {
       </div>
     </AuthLayout>
   );
-}
-export default Login
+};
+export default Login;
