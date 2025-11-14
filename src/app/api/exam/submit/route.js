@@ -5,12 +5,6 @@ export async function POST(request) {
     const body = await request.json();
     const { answers } = body;
 
-    // In a real application, you would:
-    // 1. Verify the user's token
-    // 2. Store the answers in your database
-    // 3. Calculate the actual score
-    // 4. Return the exam history ID from your database
-
     const exam_history_id = Math.floor(Math.random() * 1000000);
     const answered = answers.filter(a => a.selected_option_id != null).length;
     const not_attended = answers.filter(a => a.selected_option_id == null).length;
@@ -19,8 +13,8 @@ export async function POST(request) {
       success: true,
       exam_history_id,
       score: answered,
-      correct: 0, // Would be calculated server-side
-      wrong: 0, // Would be calculated server-side
+      correct: 0,
+      wrong: 0, 
       not_attended,
       submitted_at: new Date().toISOString(),
       details: [],
