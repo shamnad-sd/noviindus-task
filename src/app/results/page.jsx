@@ -1,4 +1,5 @@
 import ResultsContent from '@/components/Results'
+import { generateMetadata as generateMetadataFromLib } from "@/lib/generateMetadata";
 import React, { Suspense } from 'react'
 
 const ResultsPage = () => {
@@ -19,3 +20,32 @@ const ResultsPage = () => {
 }
 
 export default ResultsPage
+
+
+export async function generateMetadata() {
+  const aboutSEO = {
+    title: 'Results - NexLearn',
+    description: 'Learn more about NexLearn and our mission to provide excellent services.',
+    keywords: 'about NexLearn, company info, mission',
+    ogTitle: 'Results - NexLearn',
+    ogDescription: 'Learn more about NexLearn and our mission.',
+    siteName: 'NexLearn',
+    locale: 'en_US',
+    type: 'website',
+    images: [
+      {
+        url: '/logo.png',
+        width: 479,
+        height: 482,
+        type: 'image/png',
+        alt: 'NexLearn About',
+      },
+    ],
+    twitterCard: 'summary_large_image',
+    twitterTitle: 'Results - NexLearn',
+    twitterDescription: 'Learn more Results NexLearn.',
+    twitterImages: ['/logo.png'],
+  };
+
+  return generateMetadataFromLib(aboutSEO, false, "/results");
+}

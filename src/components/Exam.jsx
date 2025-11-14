@@ -6,6 +6,7 @@ import { useAuthStore, useExamStore } from "@/lib/store";
 import { examAPI, authAPI } from "@/lib/api";
 import toast from "react-hot-toast";
 import Navbar from "@/components/Navbar";
+import Loader from "./Loader";
 
 const Exam = ()=> {
   const router = useRouter();
@@ -34,7 +35,7 @@ const Exam = ()=> {
   const [markedForReview, setMarkedForReview] = useState(new Set());
   const ALPHABETS = ["A", "B", "C", "D", "E", "F"];
 
-  // Fetch questions on mount
+
   useEffect(() => {
     const fetchQuestions = async () => {
       const authenticated = checkAuth();
@@ -47,14 +48,9 @@ const Exam = ()=> {
         const response = await examAPI.getQuestions();
         if (response.success) {
           setExamData(response);
-        } else {
-          // toast.error("Failed to load questions");
-          // router.push("/instructions");
         }
       } catch (error) {
         console.error("Error fetching questions:", error);
-        // toast.error("Error loading exam");
-        // router.push("/instructions");
       } finally {
         setLoading(false);
       }
@@ -63,14 +59,14 @@ const Exam = ()=> {
     fetchQuestions();
   }, [checkAuth, router, setExamData]);
 
-  // Start exam when loaded
+
   useEffect(() => {
     if (questions.length > 0 && !examStarted && !loading) {
       startExam();
     }
   }, [questions, examStarted, loading, startExam]);
 
-  // Timer countdown
+
   useEffect(() => {
     if (!examStarted || timeRemaining <= 0) return;
 
@@ -81,7 +77,7 @@ const Exam = ()=> {
     return () => clearInterval(timer);
   }, [examStarted, timeRemaining, decrementTime]);
 
-  // Auto-submit when time is up
+
   useEffect(() => {
     if (timeRemaining === 0 && examStarted) {
       handleSubmitExam();
@@ -148,7 +144,7 @@ const Exam = ()=> {
       const formattedAnswers = getFormattedAnswers();
       const response = await examAPI.submitAnswers(formattedAnswers);
 
-      // Store the original API questions (with correct_answer and incorrect_answers)
+
       const originalQuestions = questions.map((q) => ({
         id: q.id,
         question: q.question,
@@ -185,14 +181,7 @@ const Exam = ()=> {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#1B5A7E] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading exam...</p>
-        </div>
-      </div>
-    );
+    return <Loader/>
   }
 
   if (!questions.length) {
