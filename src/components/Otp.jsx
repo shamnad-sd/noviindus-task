@@ -1,4 +1,3 @@
-// app/auth/verify-otp/page.js
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -8,7 +7,7 @@ import { authAPI } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 import toast from 'react-hot-toast';
 
-export default function VerifyOTPPage() {
+const OTP = () => {
   const router = useRouter();
   const mobile = useAuthStore((state) => state.mobile);
   const setTokens = useAuthStore((state) => state.setTokens);
@@ -258,3 +257,5 @@ export default function VerifyOTPPage() {
     </AuthLayout>
   );
 }
+
+export default OTP

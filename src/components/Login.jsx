@@ -7,7 +7,7 @@ import { authAPI } from "@/lib/api";
 import { useAuthStore } from "@/lib/store";
 import toast from "react-hot-toast";
 
-export default function LoginPage() {
+const Login =()=> {
   const router = useRouter();
   const setMobile = useAuthStore((state) => state.setMobile);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -21,7 +21,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const fullNumber = "+91" + phoneNumber; // Always send with +91
+    const fullNumber = "+91" + phoneNumber;
 
     try {
       const response = await authAPI.sendOTP(fullNumber);
@@ -165,3 +165,4 @@ export default function LoginPage() {
     </AuthLayout>
   );
 }
+export default Login

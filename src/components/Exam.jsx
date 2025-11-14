@@ -7,7 +7,7 @@ import { examAPI, authAPI } from "@/lib/api";
 import toast from "react-hot-toast";
 import Navbar from "@/components/Navbar";
 
-export default function ExamPage() {
+const Exam = ()=> {
   const router = useRouter();
   const { isAuthenticated, checkAuth, logout } = useAuthStore();
   const {
@@ -617,3 +617,4 @@ export default function ExamPage() {
     </div>
   );
 }
+export default Exam

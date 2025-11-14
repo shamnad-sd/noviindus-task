@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-export default function AuthLayout({ children }) {
+const AuthLayout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f1e33] to-[#1a2942] flex items-center justify-center p-4 relative">
       {/* Background blobs for decorative blur */}
@@ -34,3 +34,5 @@ export default function AuthLayout({ children }) {
     </div>
   );
 }
+
+export default AuthLayout

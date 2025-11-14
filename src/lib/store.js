@@ -1,8 +1,7 @@
-// lib/store.js
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Auth Store
+
 export const useAuthStore = create(
   persist(
     (set, get) => ({

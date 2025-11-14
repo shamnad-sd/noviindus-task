@@ -1,4 +1,3 @@
-// app/auth/profile/page.js
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -8,7 +7,7 @@ import { authAPI } from "@/lib/api";
 import { useAuthStore } from "@/lib/store";
 import toast from "react-hot-toast";
 
-export default function ProfilePage() {
+const Profile = () => {
   const router = useRouter();
   const mobile = useAuthStore((state) => state.mobile);
   const setTokens = useAuthStore((state) => state.setTokens);
@@ -312,3 +311,5 @@ export default function ProfilePage() {
     </AuthLayout>
   );
 }
+
+export default Profile

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Create axios instance that points to Next.js API routes
+
 const api = axios.create({
   baseURL: '/api',
   headers: {

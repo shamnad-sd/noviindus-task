@@ -7,7 +7,7 @@ import { authAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
 
-export default function InstructionsPage() {
+const Instructions = () => {
   const router = useRouter();
   const { isAuthenticated, checkAuth, logout } = useAuthStore();
   const [mounted, setMounted] = useState(false);
@@ -121,3 +121,4 @@ export default function InstructionsPage() {
     </div>
   );
 }
+export default Instructions
